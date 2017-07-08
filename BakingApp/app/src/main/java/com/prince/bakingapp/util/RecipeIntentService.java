@@ -2,9 +2,8 @@ package com.prince.bakingapp.util;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.util.Log;
+
+import static android.provider.Telephony.BaseMmsColumns.RESPONSE_STATUS;
 
 public class RecipeIntentService extends IntentService {
     //SwipeRefreshLayout: parameters for broadcast receiver
@@ -12,6 +11,8 @@ public class RecipeIntentService extends IntentService {
             = "com.prince.bakingapp.intent.action.STATE_CHANGE";
     public static final String EXTRA_REFRESHING
             = "com.prince.bakingapp.intent.extra.REFRESHING";
+    public static final String EXTRA_RESPONSE_STATUS
+            = "com.prince.bakingapp.intent.extra.RESPONSE_STATUS";
 
     public RecipeIntentService() {
         super(RecipeIntentService.class.getSimpleName());
@@ -19,19 +20,25 @@ public class RecipeIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo == null || !networkInfo.isConnected()) {
+        int response = Utilities.ApiResponseStatus.NONE;
 
-            return;
+        if (!Utilities.isNetworkAvailable(this)) {
+            response = Utilities.ApiResponseStatus.ERROR;
+        } else {
+            // set status to refreshing (tell UI to show loading indicator)
+            sendBroadcast(
+                    new Intent(BROADCAST_ACTION_STATE_CHANGE)
+                            .putExtra(EXTRA_REFRESHING, true)
+                            .putExtra(RESPONSE_STATUS, response));
+
+            response = RecipeSyncTask.getRecipes(this);
         }
 
+        // set status to refreshed (tell UI to stop showing loading indicator)
+        // and upate response status
         sendBroadcast(
-                new Intent(BROADCAST_ACTION_STATE_CHANGE).putExtra(EXTRA_REFRESHING, true));
-
-        RecipeSyncTask.getRecipes(this);
-
-        sendBroadcast(
-                new Intent(BROADCAST_ACTION_STATE_CHANGE).putExtra(EXTRA_REFRESHING, false));
+                new Intent(BROADCAST_ACTION_STATE_CHANGE)
+                        .putExtra(EXTRA_REFRESHING, false)
+                        .putExtra(EXTRA_RESPONSE_STATUS, response));
     }
 }

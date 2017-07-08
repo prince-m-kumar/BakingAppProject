@@ -10,68 +10,49 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.prince.bakingapp.R;
+import com.prince.bakingapp.data.BakeAppContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.prince.bakingapp.data.Contract.StepEntry;
-
 /**
- *
+ * Created by princ on 08-07-2017.
  */
-public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder> {
+public class BakeStepAdapter extends RecyclerView.Adapter<BakeStepAdapter.StepViewHolder> {
     private Cursor cursor;
     private Context context;
 
     final private ListItemClickListener onClickListener;
 
-    /**
-     * @param cursor
-     * @param context
-     * @param listener
-     */
-    public StepAdapter(Cursor cursor, Context context, ListItemClickListener listener) {
+    public BakeStepAdapter(Cursor cursor, Context context, ListItemClickListener listener) {
         this.cursor = cursor;
         this.context = context;
         this.onClickListener = listener;
     }
 
-    /**
-     *
-     */
     public interface ListItemClickListener {
         void onListItemClick(int clickedItemIndex, StepViewHolder stepViewHolder);
     }
 
-    /**
-     * @param parent
-     * @param viewType
-     * @return
-     */
     @Override
-    public StepAdapter.StepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public BakeStepAdapter.StepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View item = LayoutInflater.from(context).inflate(R.layout.list_item_step, parent, false);
         return new StepViewHolder(item);
     }
 
-    /**
-     * @param holder
-     * @param position
-     */
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(StepAdapter.StepViewHolder holder, int position) {
+    public void onBindViewHolder(BakeStepAdapter.StepViewHolder holder, int position) {
         cursor.moveToPosition(position);
         if (null != cursor) {
-            holder.stepNumber.setText(Integer.toString(cursor.getInt(StepEntry.POSITION_ID)));
-            holder.stepDescription.setText(cursor.getString(StepEntry.POSITION_SHORT_DESCRIPTION));
+            holder.stepNumber.setText(Integer.toString(cursor.getInt(BakeAppContract.StepEntry.POSITION_ID)));
+            holder.stepDescription.setText(cursor.getString(BakeAppContract.StepEntry.POSITION_SHORT_DESCRIPTION));
         }
     }
 
     @Override
     public long getItemId(int position) {
-        cursor.moveToPosition(position);
-        return cursor.getLong(StepEntry.POSITION_ID);
+        return 1;
     }
 
     @Override
@@ -85,9 +66,6 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         notifyDataSetChanged();
     }
 
-    /**
-     *
-     */
     public class StepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.step_number)
         TextView stepNumber;
@@ -95,18 +73,12 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.StepViewHolder
         @BindView(R.id.step_description)
         TextView stepDescription;
 
-        /**
-         * @param itemView
-         */
         StepViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
-        /**
-         * @param v
-         */
         @Override
         public void onClick(View v) {
             onClickListener.onListItemClick(getAdapterPosition(), this);

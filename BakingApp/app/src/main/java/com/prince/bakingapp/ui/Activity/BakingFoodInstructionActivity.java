@@ -13,19 +13,22 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.prince.bakingapp.R;
-import com.prince.bakingapp.data.Contract;
-import com.prince.bakingapp.ui.fragment.FragmentVideo;
+import com.prince.bakingapp.data.BakeAppContract;
+import com.prince.bakingapp.ui.fragment.FragmentBakingVideo;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Created by princ on 07-07-2017.
+ */
 
-
-public class InstructionActivity extends AppCompatActivity
+public class BakingFoodInstructionActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
-    @BindView(R.id.view_pager)
+    @BindView(R.id.instruction_view_pager)
     ViewPager viewPager;
 
     private Cursor cursor;
@@ -49,8 +52,8 @@ public class InstructionActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             if (getIntent() != null && getIntent().getData() != null) {
-                recipeId = Contract.StepEntry.getRecipeId(getIntent().getData());
-                stepId = Contract.StepEntry.getStepId(getIntent().getData());
+                recipeId = BakeAppContract.StepEntry.getRecipeId(getIntent().getData());
+                stepId = BakeAppContract.StepEntry.getStepId(getIntent().getData());
             }
         }
         getLoaderManager().initLoader(4, null, this);
@@ -60,22 +63,34 @@ public class InstructionActivity extends AppCompatActivity
 
         // Set the adapter onto the view pager
         viewPager.setAdapter(instructionPagerAdapter);
-        viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
             @Override
             public void onPageSelected(int position) {
                 if (cursor != null) {
                     cursor.moveToPosition(position);
                 }
             }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
         });
+
+        Toast.makeText(this, R.string.notification_instruction_starting, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = Contract.StepEntry.buildDirUri(recipeId);
+        Uri uri = BakeAppContract.StepEntry.buildDirUri(recipeId);
         return new CursorLoader(this,
                 uri,
-                Contract.StepEntry.STEP_COLUMNS.toArray(new String[]{}),
+                BakeAppContract.StepEntry.STEP_COLUMNS.toArray(new String[]{}),
                 null,
                 null,
                 null);
@@ -103,9 +118,9 @@ public class InstructionActivity extends AppCompatActivity
         @Override
         public Fragment getItem(int position) {
             cursor.moveToPosition(position);
-            long recipeId = cursor.getLong(Contract.StepEntry.POSITION_RECIPE_ID);
-            long stepId = cursor.getLong(Contract.StepEntry.POSITION_ID);
-            return FragmentVideo.newInstance(recipeId, stepId);
+            long recipeId = cursor.getLong(BakeAppContract.StepEntry.POSITION_RECIPE_ID);
+            long stepId = cursor.getLong(BakeAppContract.StepEntry.POSITION_ID);
+            return FragmentBakingVideo.newInstance(recipeId, stepId);
         }
 
         @Override

@@ -20,36 +20,46 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 
 import com.prince.bakingapp.R;
+import com.prince.bakingapp.adapter.RecipeAdapter;
+import com.prince.bakingapp.data.BakeAppContract;
+import com.prince.bakingapp.ui.Activity.BakeFoodDetailActivity;
+import com.prince.bakingapp.util.RecipeIntentService;
+import com.prince.bakingapp.util.Utilities;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import com.prince.bakingapp.adapter.RecipeAdapter;
-import com.prince.bakingapp.data.Contract;
-import com.prince.bakingapp.ui.Activity.DetailActivity;
-import com.prince.bakingapp.util.RecipeIntentService;
-
-public class FragmentRecipe extends Fragment
+/**
+ * Created by princ on 08-07-2017.
+ */
+public class FragmentFoodRecipe extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor>, RecipeAdapter.ListItemClickListener {
     private RecipeAdapter recipeAdapter;
     private int position = RecyclerView.NO_POSITION;
 
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.recipe_recycler_view)
     RecyclerView recyclerView;
+
+    @BindView(R.id.recipe_empty)
+    View emptyView;
 
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
     //SwipeRefreshLayout: declare broadcast receiver
     private boolean isRefreshing = false;
+
     private BroadcastReceiver refreshingReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (RecipeIntentService.BROADCAST_ACTION_STATE_CHANGE.equals(intent.getAction())) {
                 isRefreshing = intent.getBooleanExtra(RecipeIntentService.EXTRA_REFRESHING, false);
-                updateRefreshingUI();
+                int responseStatus = intent.getIntExtra(RecipeIntentService.EXTRA_RESPONSE_STATUS, Utilities.ApiResponseStatus.NONE);
+                updateRefreshingUI(responseStatus);
             }
         }
     };
@@ -71,7 +81,7 @@ public class FragmentRecipe extends Fragment
         recipeAdapter = new RecipeAdapter(null, getActivity(), this);
 
         recyclerView.setAdapter(recipeAdapter);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(getResources().getInteger(R.integer.main_screen_column_count), StaggeredGridLayoutManager.VERTICAL));
         recyclerView.setHasFixedSize(true);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -105,16 +115,33 @@ public class FragmentRecipe extends Fragment
         getActivity().unregisterReceiver(refreshingReceiver);
     }
 
-    private void updateRefreshingUI() {
+    private void updateRefreshingUI(int responseStatus) {
         swipeRefreshLayout.setRefreshing(isRefreshing);
+
+        switch (responseStatus) {
+            case Utilities.ApiResponseStatus.SUCCESS:
+                emptyView.setVisibility(View.GONE);
+                break;
+            case Utilities.ApiResponseStatus.ERROR:
+                ((TextView) emptyView).setText(R.string.label_empty_no_data);
+                emptyView.setVisibility(View.VISIBLE);
+                break;
+            default:
+                if (isRefreshing) {
+                    ((TextView) emptyView).setText(R.string.label_empty_refreshing);
+                    emptyView.setVisibility(View.VISIBLE);
+                } else {
+                    emptyView.setVisibility(View.GONE);
+                }
+        }
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = Contract.RecipeEntry.buildDirUri();
+        Uri uri = BakeAppContract.RecipeEntry.buildDirUri();
         return new CursorLoader(getActivity(),
                 uri,
-                Contract.RecipeEntry.RECIPE_COLUMNS.toArray(new String[]{}),
+                BakeAppContract.RecipeEntry.RECIPE_COLUMNS.toArray(new String[]{}),
                 null,
                 null,
                 null);
@@ -125,6 +152,17 @@ public class FragmentRecipe extends Fragment
         recipeAdapter.swapCursor(data);
         if (position == RecyclerView.NO_POSITION) position = 0;
         recyclerView.smoothScrollToPosition(position);
+
+        if ((data != null) && data.moveToFirst()) {
+            if (Utilities.isFavoriteEmpty(getContext())) {
+                Utilities.setAsFavoriteRecipe(
+                        getContext(),
+                        data.getLong(BakeAppContract.RecipeEntry.POSITION_ID),
+                        data.getString(BakeAppContract.RecipeEntry.POSITION_NAME),
+                        data.getString(BakeAppContract.RecipeEntry.POSITION_IMAGE)
+                );
+            }
+        }
     }
 
     @Override
@@ -139,8 +177,8 @@ public class FragmentRecipe extends Fragment
                 recipeViewHolder.recipeImage,
                 ViewCompat.getTransitionName(recipeViewHolder.recipeImage)).toBundle();
 
-        Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.setData(Contract.RecipeEntry.buildItemUri(recipeAdapter.getItemId(clickedItemIndex)));
+        Intent intent = new Intent(getActivity(), BakeFoodDetailActivity.class);
+        intent.setData(BakeAppContract.RecipeEntry.buildItemUri(recipeAdapter.getItemId(clickedItemIndex)));
         startActivity(intent, bundle);
     }
 }

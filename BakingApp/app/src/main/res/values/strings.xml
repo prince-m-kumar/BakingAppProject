@@ -1,8 +1,12 @@
 <resources>
-    <string name="app_name">Mobile Chef</string>
-    <string name="title_activity_detail">DetailActivity</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_instruction">instruction</string>
+    <string name="app_name">Baking App</string>
+    <string name="label_servings">servings</string>
+    <string name="label_empty_no_data">No recipe found. Check your Internet connection or try again in a few minutes</string>
+    <string name="label_empty_refreshing">Collecting recipes. Please wait…</string>
+    <string name="label_step_image">Step illustration</string>
+    <string name="notification_favorite_added">Recipe added to favorite!</string>
+    <string name="notification_instruction_starting">Swipe left or right to navigate between video instruction</string>
+    <string name="label_ingredients">Ingredients</string>
+    <string name="label_steps">Steps</string>
+    <string name="bake_app_url">https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json</string>
 </resources>

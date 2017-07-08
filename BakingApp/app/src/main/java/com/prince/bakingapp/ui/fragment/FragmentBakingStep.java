@@ -18,35 +18,36 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.prince.bakingapp.R;
-import com.prince.bakingapp.adapter.StepAdapter;
-import com.prince.bakingapp.data.Contract;
-import com.prince.bakingapp.ui.Activity.InstructionActivity;
+import com.prince.bakingapp.adapter.BakeStepAdapter;
+import com.prince.bakingapp.data.BakeAppContract;
+import com.prince.bakingapp.ui.Activity.BakingFoodInstructionActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
 /**
- * A simple {@link Fragment} subclass.
+ * Created by princ on 08-07-2017.
  */
-public class FragmentStep extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor>, StepAdapter.ListItemClickListener {
-    public static final String ARG_RECIPE_ID = "recipeId";
+
+public class FragmentBakingStep extends Fragment
+        implements LoaderManager.LoaderCallbacks<Cursor>, BakeStepAdapter.ListItemClickListener {
+    private static final String ARG_RECIPE_ID = "recipeId";
+    private static final String TAG_FRAGMENT_VIDEO = "tag_fragment_video";
     private long recipeId;
-    private StepAdapter stepAdapter;
+    private BakeStepAdapter bakeStepAdapter;
     private int position = RecyclerView.NO_POSITION;
 
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.step_recycler_view)
     RecyclerView recyclerView;
 
-    public FragmentStep() {
+    public FragmentBakingStep() {
         // Required empty public constructor
     }
 
-    public static FragmentStep newInstance(long recipeId) {
+    public static FragmentBakingStep newInstance(long recipeId) {
         Bundle arguments = new Bundle();
         arguments.putLong(ARG_RECIPE_ID, recipeId);
-        FragmentStep fragment = new FragmentStep();
+        FragmentBakingStep fragment = new FragmentBakingStep();
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -70,9 +71,9 @@ public class FragmentStep extends Fragment
         //initialize ButterKnife library
         ButterKnife.bind(this, rootView);
 
-        stepAdapter = new StepAdapter(null, getActivity(), this);
+        bakeStepAdapter = new BakeStepAdapter(null, getActivity(), this);
 
-        recyclerView.setAdapter(stepAdapter);
+        recyclerView.setAdapter(bakeStepAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
@@ -90,10 +91,10 @@ public class FragmentStep extends Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = Contract.StepEntry.buildDirUri(recipeId);
+        Uri uri = BakeAppContract.StepEntry.buildDirUri(recipeId);
         return new CursorLoader(getActivity(),
                 uri,
-                Contract.StepEntry.STEP_COLUMNS.toArray(new String[]{}),
+                BakeAppContract.StepEntry.STEP_COLUMNS.toArray(new String[]{}),
                 null,
                 null,
                 null);
@@ -101,20 +102,28 @@ public class FragmentStep extends Fragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        stepAdapter.swapCursor(data);
+        bakeStepAdapter.swapCursor(data);
         if (position == RecyclerView.NO_POSITION) position = 0;
         recyclerView.smoothScrollToPosition(position);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        stepAdapter.swapCursor(null);
+        bakeStepAdapter.swapCursor(null);
     }
 
     @Override
-    public void onListItemClick(int clickedItemIndex, StepAdapter.StepViewHolder stepViewHolder) {
-        Intent intent = new Intent(getActivity(), InstructionActivity.class);
-        intent.setData(Contract.StepEntry.buildItemUri(recipeId, clickedItemIndex));
-        startActivity(intent);
+    public void onListItemClick(int clickedItemIndex, BakeStepAdapter.StepViewHolder stepViewHolder) {
+        if (getActivity().findViewById(R.id.video_container) != null) {
+            Fragment fragmentVideo = FragmentBakingVideo.newInstance(recipeId, clickedItemIndex);
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.video_container, fragmentVideo, TAG_FRAGMENT_VIDEO)
+                    .commit();
+        } else {
+            Intent intent = new Intent(getActivity(), BakingFoodInstructionActivity.class);
+            intent.setData(BakeAppContract.StepEntry.buildItemUri(recipeId, clickedItemIndex));
+            startActivity(intent);
+        }
     }
 }

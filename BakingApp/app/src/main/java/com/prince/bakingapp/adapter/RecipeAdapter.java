@@ -10,17 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.prince.bakingapp.R;
+import com.prince.bakingapp.data.BakeAppContract;
 import com.squareup.picasso.Picasso;
-
-
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.prince.bakingapp.data.Contract.RecipeEntry;
-
 /**
- *
+ * Created by princ on 08-07-2017.
  */
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
     private Cursor cursor;
@@ -28,89 +25,60 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     final private ListItemClickListener onClickListener;
 
-    /**
-     * @param cursor
-     * @param context
-     * @param listener
-     */
     public RecipeAdapter(Cursor cursor, Context context, ListItemClickListener listener) {
         this.cursor = cursor;
         this.context = context;
         this.onClickListener = listener;
     }
 
-    /**
-     *
-     */
     public interface ListItemClickListener {
         void onListItemClick(int clickedItemIndex, RecipeViewHolder recipeViewHolder);
     }
 
-    /**
-     * @param parent
-     * @param viewType
-     * @return
-     */
     @Override
     public RecipeAdapter.RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View item = LayoutInflater.from(context).inflate(R.layout.list_item_recipe, parent, false);
         return new RecipeViewHolder(item);
     }
 
-    /**
-     * @param holder
-     * @param position
-     */
     @Override
     public void onBindViewHolder(RecipeAdapter.RecipeViewHolder holder, int position) {
         cursor.moveToPosition(position);
         if (null != cursor) {
-            holder.recipeName.setText(cursor.getString(RecipeEntry.POSITION_NAME));
-            if (!cursor.getString(RecipeEntry.POSITION_IMAGE).equals("")) {
+            holder.recipeName.setText(cursor.getString(BakeAppContract.RecipeEntry.POSITION_NAME));
+            holder.recipeImage.setContentDescription(cursor.getString(BakeAppContract.RecipeEntry.POSITION_IMAGE));
+            if (!cursor.getString(BakeAppContract.RecipeEntry.POSITION_IMAGE).equals("")) {
                 Picasso.with(context)
-                        .load(cursor.getString(RecipeEntry.POSITION_IMAGE))
-                        .placeholder(R.drawable.recipe_image_substitute)
-                        .error(R.drawable.recipe_image_substitute)
+                        .load(cursor.getString(BakeAppContract.RecipeEntry.POSITION_IMAGE))
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.placeholder)
                         .into(holder.recipeImage);
             } else {
                 Picasso.with(context)
-                        .load(R.drawable.recipe_image_substitute)
-                        .placeholder(R.drawable.recipe_image_substitute)
+                        .load(R.drawable.placeholder)
+                        .placeholder(R.drawable.placeholder)
                         .into(holder.recipeImage);
             }
         }
     }
 
-    /**
-     * @param position
-     * @return
-     */
     @Override
     public long getItemId(int position) {
         cursor.moveToPosition(position);
-        return cursor.getLong(RecipeEntry.POSITION_ID);
+        return cursor.getLong(BakeAppContract.RecipeEntry.POSITION_ID);
     }
 
-    /**
-     * @return
-     */
     @Override
     public int getItemCount() {
         if (null == cursor) return 0;
         return cursor.getCount();
     }
 
-    /**
-     * @param newCursor
-     */
     public void swapCursor(Cursor newCursor) {
         cursor = newCursor;
         notifyDataSetChanged();
     }
 
-    /**
-     *
-     */
     public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.recipe_image)
         public
@@ -119,18 +87,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         @BindView(R.id.recipe_name)
         TextView recipeName;
 
-        /**
-         * @param itemView
-         */
         RecipeViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
-        /**
-         * @param v
-         */
         @Override
         public void onClick(View v) {
             onClickListener.onListItemClick(getAdapterPosition(), this);

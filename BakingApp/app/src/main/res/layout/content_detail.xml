@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.prince.bakingapp.ui.Activity.DetailActivity"
+    tools:context="com.prince.bakingapp.ui.Activity.BakeFoodDetailActivity"
     tools:showIn="@layout/activity_detail">
 
     <LinearLayout
@@ -17,7 +17,7 @@
             android:id="@+id/sliding_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/ltgray"
+            android:background="@color/light_gray"
             android:elevation="8dp"
             app:tabIndicatorColor="@color/colorPrimary"
             app:tabMode="fixed"

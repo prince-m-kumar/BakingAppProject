@@ -1,7 +1,8 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_image">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/toolbar_container"
@@ -15,22 +16,38 @@
             android:layout_height="match_parent"
             app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginStart="72dp"
+            app:expandedTitleMarginStart="@dimen/expanded_title_margin_start"
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+                android:id="@+id/main_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 android:layout_gravity="bottom"
+                android:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+                <ImageView
+                    android:layout_width="@dimen/image_view_width"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/logo" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:textAppearance="?android:textAppearanceLarge"
-                    android:text="MobileChef"/>
+                    android:autoText="true"
+                    android:gravity="left"
+                    android:text="@string/app_name"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:typeface="serif" />
+
+
             </android.support.v7.widget.Toolbar>
 
 
@@ -39,8 +56,10 @@
 
     <fragment
         android:id="@+id/fragment_recipe"
-        android:name="com.prince.bakingapp.ui.fragment.FragmentRecipe"
+        android:name="com.prince.bakingapp.ui.fragment.FragmentFoodRecipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/horizontal_margin"
+        android:layout_marginStart="@dimen/horizontal_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </android.support.design.widget.CoordinatorLayout>

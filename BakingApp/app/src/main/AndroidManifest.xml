@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.Activity.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,22 +24,22 @@
 
 
         <activity
-            android:name=".ui.Activity.DetailActivity"
-            android:parentActivityName=".ui.Activity.MainActivity"
+            android:name=".ui.Activity.BakeFoodDetailActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.Activity.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
 
         <activity
-            android:name=".ui.Activity.InstructionActivity"
-            android:label="@string/title_activity_instruction"
-            android:parentActivityName=".ui.Activity.DetailActivity"
+            android:name=".ui.Activity.BakingFoodInstructionActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".ui.Activity.BakeFoodDetailActivity"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.Activity.DetailActivity" />
+                android:value=".ui.Activity.BakeFoodDetailActivity" />
         </activity>
 
         <service
@@ -55,7 +55,7 @@
 
 
         <provider
-            android:name=".data.RecipeProvider"
+            android:name=".data.BakeAppRecipeProvider"
             android:authorities="com.prince.bakingapp"
             android:exported="false" />
 

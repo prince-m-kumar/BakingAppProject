@@ -4,15 +4,16 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import com.google.common.collect.ImmutableList;
-
 /**
- *
+ * Created by princ on 08-07-2017.
  */
-public class Contract {
+public class BakeAppContract {
     public static final String AUTHORITY = "com.prince.bakingapp";
     static final String PATH_RECIPE = "recipe";
     static final String PATH_INGREDIENT = "ingredient";
     static final String PATH_STEP = "step";
+    static final String PATH_SERVINGS = "servings";
+
 
     private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
 
@@ -38,8 +39,6 @@ public class Contract {
         /**
          * Matches: /recipe/
          */
-
-
         public static Uri buildDirUri() {
             return BASE_URI
                     .buildUpon()
@@ -101,10 +100,36 @@ public class Contract {
         }
 
         /**
-         * Read recipe ID item detail URI.
+         * Matches: /recipe/[_id]/ingredient/servings/#
+         */
+        public static Uri buildServingsUri(long recipeId, int oldServings, int newServings) {
+            return BASE_URI
+                    .buildUpon()
+                    .appendPath(PATH_RECIPE)
+                    .appendPath(Long.toString(recipeId))
+                    .appendPath(PATH_INGREDIENT)
+                    .appendPath(PATH_SERVINGS)
+                    .appendPath(Integer.toString(oldServings))
+                    .appendPath(Integer.toString(newServings))
+                    .build();
+        }
+
+        /**
+         * Read recipe ID from URI.
          */
         static long getRecipeId(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(1));
+        }
+
+        /**
+         * Read servings from URI.
+         */
+        static long getOldServings(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(4));
+        }
+
+        static long getNewServings(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(5));
         }
     }
 
