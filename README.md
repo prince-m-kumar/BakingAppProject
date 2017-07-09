@@ -11,6 +11,7 @@ We create a Android Baking App that will allow Udacity’s resident baker-in-chi
 * [Butterknife](http://jakewharton.github.io/butterknife/)
 * [Exoplayer](https://developer.android.com/guide/topics/media/exoplayer.html)
 * [Timber](https://github.com/JakeWharton/timber)
+* [Volley](https://developer.android.com/training/volley/index.html)
 
 ## What Will I Learn?
 In this project We will:
