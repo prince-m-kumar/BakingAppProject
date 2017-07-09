@@ -3,8 +3,7 @@ package com.prince.bakingapp;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.prince.bakingapp.R;
-import com.prince.bakingapp.util.RecipeSyncUtilities;
+import com.prince.bakingapp.utils.RecipeSyncUtilities;
 
 import timber.log.Timber;
 

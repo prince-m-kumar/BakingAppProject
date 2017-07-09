@@ -7,14 +7,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
-
 import com.prince.bakingapp.R;
 import com.prince.bakingapp.data.BakeAppContract;
 import com.prince.bakingapp.ui.fragment.FragmentBakingVideo;
@@ -35,6 +35,7 @@ public class BakingFoodInstructionActivity extends AppCompatActivity
     private long recipeId;
     private long stepId;
     private InstructionPagerAdapter instructionPagerAdapter;
+    private CoordinatorLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class BakingFoodInstructionActivity extends AppCompatActivity
                             View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
 
+        frameLayout=(CoordinatorLayout) findViewById(R.id.coordinatorLayout_instruction_container) ;
         //initialize Butterknife
         ButterKnife.bind(this);
 
@@ -82,7 +84,7 @@ public class BakingFoodInstructionActivity extends AppCompatActivity
             }
         });
 
-        Toast.makeText(this, R.string.notification_instruction_starting, Toast.LENGTH_LONG).show();
+        Snackbar.make(frameLayout, R.string.notification_instruction_starting, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

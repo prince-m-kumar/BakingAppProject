@@ -1,4 +1,4 @@
-package com.prince.bakingapp.util;
+package com.prince.bakingapp.utils;
 
 import android.os.AsyncTask;
 

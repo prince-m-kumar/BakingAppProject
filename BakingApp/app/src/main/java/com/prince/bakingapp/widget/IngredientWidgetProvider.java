@@ -1,4 +1,4 @@
-package com.prince.bakingapp.util;
+package com.prince.bakingapp.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -15,6 +15,7 @@ import android.widget.RemoteViews;
 import com.prince.bakingapp.R;
 import com.prince.bakingapp.data.BakeAppContract;
 import com.prince.bakingapp.ui.Activity.BakeFoodDetailActivity;
+import com.prince.bakingapp.utils.Utilities;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 

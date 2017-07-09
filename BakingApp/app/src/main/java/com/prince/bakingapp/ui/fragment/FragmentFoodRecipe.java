@@ -27,8 +27,8 @@ import com.prince.bakingapp.R;
 import com.prince.bakingapp.adapter.RecipeAdapter;
 import com.prince.bakingapp.data.BakeAppContract;
 import com.prince.bakingapp.ui.Activity.BakeFoodDetailActivity;
-import com.prince.bakingapp.util.RecipeIntentService;
-import com.prince.bakingapp.util.Utilities;
+import com.prince.bakingapp.utils.RecipeIntentService;
+import com.prince.bakingapp.utils.Utilities;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

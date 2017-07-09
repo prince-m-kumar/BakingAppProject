@@ -1,4 +1,4 @@
-package com.prince.bakingapp.util;
+package com.prince.bakingapp.utils;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
@@ -7,6 +7,12 @@ import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.os.RemoteException;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.prince.bakingapp.R;
 import com.prince.bakingapp.data.BakeAppContract;
 
@@ -25,46 +31,26 @@ import static com.prince.bakingapp.data.BakeAppContract.AUTHORITY;
 
 
 public class RecipeSyncTask {
-    static int getRecipes(Context context) {
-        HttpURLConnection urlConnection;
-        BufferedReader reader;
-
-        URL url;
-        try {
-            String RECIPE_API_URL = context.getResources().getString(R.string.bake_app_url).toString();
-            url = new URL(RECIPE_API_URL);
-
-            // Create the request to API, and open the connection
-            urlConnection = (HttpURLConnection) url.openConnection();
-
-            urlConnection.setRequestMethod("GET");
-            urlConnection.setReadTimeout(10000 /* milliseconds */);
-            urlConnection.setConnectTimeout(15000 /* milliseconds */);
-            urlConnection.connect();
-
-            // Read the input stream into a String
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuilder buffer = new StringBuilder();
-            if (null == inputStream) {
-                // Nothing to do.
-                return Utilities.ApiResponseStatus.NONE;
+    static int getRecipes(final Context context) {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = context.getResources().getString(R.string.bake_app_url).toString();
+        final int[] status = {0};
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        syncDatabase(context, response);
+                        status[0] =Utilities.ApiResponseStatus.SUCCESS;
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                status[0] =Utilities.ApiResponseStatus.ERROR;
             }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // add newline to make debugging easier
-                buffer.append(line).append("\n");
-            }
-
-            if (buffer.length() > 0) {
-                syncDatabase(context, buffer.toString());
-            }
-            return Utilities.ApiResponseStatus.SUCCESS;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Utilities.ApiResponseStatus.ERROR;
-        }
+        });
+        queue.add(stringRequest);
+        return status[0];
     }
 
     private static void syncDatabase(Context context, String jsonData) {

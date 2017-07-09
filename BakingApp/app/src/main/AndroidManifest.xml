@@ -43,10 +43,10 @@
         </activity>
 
         <service
-            android:name=".util.RecipeIntentService"
+            android:name=".utils.RecipeIntentService"
             android:exported="false" />
         <service
-            android:name=".util.RecipeJobService"
+            android:name=".utils.RecipeJobService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
@@ -60,6 +60,16 @@
             android:exported="false" />
 
 
+        <receiver android:name=".widget.IngredientWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="net.cdmsoftware.mobilechef.ACTION_DATA_UPDATED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ingredient_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

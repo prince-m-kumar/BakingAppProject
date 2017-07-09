@@ -27,12 +27,12 @@ import com.prince.bakingapp.data.BakeAppContract;
 import com.prince.bakingapp.ui.fragment.FragmentBakingVideo;
 import com.prince.bakingapp.ui.fragment.FragmentRecipeIngredient;
 import com.prince.bakingapp.ui.fragment.FragmentBakingStep;
-import com.prince.bakingapp.util.IngredientWidgetProvider;
+import com.prince.bakingapp.widget.IngredientWidgetProvider;
 import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.prince.bakingapp.util.Utilities.setAsFavoriteRecipe;
+import static com.prince.bakingapp.utils.Utilities.setAsFavoriteRecipe;
 
 /**
  * Created by princ on 06-07-2017.

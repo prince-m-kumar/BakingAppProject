@@ -1,4 +1,4 @@
-package com.prince.bakingapp.util;
+package com.prince.bakingapp.widget;
 
 import android.content.Intent;
 import android.database.Cursor;

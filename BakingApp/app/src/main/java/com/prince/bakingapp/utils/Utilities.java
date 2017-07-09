@@ -1,10 +1,12 @@
-package com.prince.bakingapp.util;
+package com.prince.bakingapp.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+
+import com.prince.bakingapp.widget.IngredientWidgetProvider;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
